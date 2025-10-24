@@ -2,8 +2,12 @@ package dao;
 
 import model.Usuario;
 import util.Funcoes;
+import util.ResultadoCadastro;
+
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
 
@@ -25,25 +29,65 @@ public class UsuarioDAO {
              }
     }
 
-    // Atençao: este metodo deve existir
-    public boolean inserir(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nome_usuario, senha_hash, data_criacao) VALUES (?, ?, ?)";
+    public boolean existeUsuario(String nome_usuario){
+        String sql = "SELECT id FROM usuarios WHERE nome_usuario = ?";
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nome_usuario);
+
+            ResultSet rs = stmt.executeQuery();
+            return rs.next(); 
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao verificar existência de usuário: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public ResultadoCadastro inserir(Usuario usuario){
+        if (existeUsuario(usuario.getLogin())) {
+            return ResultadoCadastro.USUARIO_EXISTE;
+        }
+
+        String sql = "INSERT INTO usuarios (nome_usuario, senha_hash, data_criacao, tipo, ativo) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = Conexao.conectar();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, usuario.getLogin());
             stmt.setString(2, Funcoes.gerarHashSHA256(usuario.getSenha()));
             stmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-
+            stmt.setString(4, "U");
+            stmt.setString(5, "T");
             stmt.executeUpdate();
-            System.out.println("Usuário inserido com sucesso.");
-            return true;
+
+            return ResultadoCadastro.SUCESSO;
 
         } catch (SQLException e) {
             System.out.println("Erro ao inserir usuário: " + e.getMessage());
-            return false;
+            return ResultadoCadastro.ERRO_BANCO;
         }
-
     }
+
+    // Atençao: este metodo deve existir
+    // public boolean inserir(Usuario usuario) {
+    //     String sql = "INSERT INTO usuarios (nome_usuario, senha_hash, data_criacao) VALUES (?, ?, ?)";
+    //     try (Connection conn = Conexao.conectar();
+    //          PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+    //         stmt.setString(1, usuario.getLogin());
+    //         stmt.setString(2, Funcoes.gerarHashSHA256(usuario.getSenha()));
+    //         stmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+
+    //         stmt.executeUpdate();
+    //         System.out.println("Usuário inserido com sucesso.");
+    //         return true;
+
+    //     } catch (SQLException e) {
+    //         System.out.println("Erro ao inserir usuário: " + e.getMessage());
+    //         return false;
+    //     }
+
+    // }
     
 }
