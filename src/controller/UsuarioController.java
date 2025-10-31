@@ -1,6 +1,5 @@
 package controller;
 
-
 import model.Usuario;
 import dao.UsuarioDAO;
 
@@ -15,9 +14,13 @@ public class UsuarioController {
     }
 
     public boolean cadastrar(String login, String senha){
+
         Usuario u = new Usuario();
         u.setLogin(login);
         u.setSenha(senha);
-        return d.inserir(u);
+        u.setTipo("U");
+        u.setAtivo("T");
+        u.setDataCriacao(java.time.LocalDateTime.now().toString());
+        return d.inserir(u) != null; 
     }
 }
