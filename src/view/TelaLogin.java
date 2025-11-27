@@ -8,6 +8,10 @@ import java.awt.*;
 
 public class TelaLogin extends JFrame {
     private final UsuarioController controller = new UsuarioController();
+    private JTextField txtLogin; // Declare txtLogin
+    private JPasswordField txtSenha; // Declare txtSenha
+    private JButton btnEntrar; // Declare btnEntrar
+    private JButton btnCadastrar; // Declare btnCadastrar
 
     public TelaLogin() {
         setTitle("Login");
@@ -22,7 +26,7 @@ public class TelaLogin extends JFrame {
 
         add(new JLabel("Senha:"));
         txtSenha = new JPasswordField();
-        add(txtLogin);
+        add(txtSenha); // Corrected to add txtSenha
 
         btnEntrar = new JButton("Entrar");
         btnCadastrar = new JButton("Cadastrar");
@@ -31,24 +35,23 @@ public class TelaLogin extends JFrame {
         add(btnCadastrar);
 
         btnEntrar.addActionListener(e -> {
-        
             String login = txtLogin.getText();
             String senha = new String(txtSenha.getPassword());
 
             if (controller.login(login, senha)) {
                 Mensagem.info("Login realizado com sucesso!");
-                Usuario Usuario = new Usuario();
-                usuario.setLogin(login);
+                Usuario usuario = new Usuario(); // Corrected variable name
+                usuario.setLogin(login); // Corrected variable name
                 dispose();
                 new TelaMenu(usuario).setVisible(true);
             } else {
-                Mensagem.showError("Login ou senha incorretos.");
+                Mensagem.info("Login ou senha incorretos."); // Changed to an existing method
             }   
         });
 
         btnCadastrar.addActionListener(e -> {
-            TelaCadastroUsuario cadastro = new TelaCadastroUsuario();
-            telaCadastro.setVisible(true);
+            TelaCadastroUsuario telaCadastro = new TelaCadastroUsuario(); // Corrected variable name
+            telaCadastro.setVisible(true); // Corrected variable name
         });
     }
 }

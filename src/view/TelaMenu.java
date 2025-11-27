@@ -14,7 +14,6 @@ public class TelaMenu extends JFrame {
         setTitle("Menu Principal - Usuário:" + usuario.getLogin());
         setSize(400,300);
         setLocationRelativeTo(null);
-        setDefaultRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();

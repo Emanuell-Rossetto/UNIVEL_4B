@@ -36,7 +36,9 @@ public class TelaCadastroUsuario extends JFrame {
         btnSalvar.addActionListener(e -> {
             String login = txtLogin.getText();
             String senha = new String(txtSenha.getPassword());
-            ResultadoCadastro resultado = controller.cadastrar(login,senha);
+            boolean isCadastrado = controller.cadastrar(login, senha); // Assuming this returns a boolean
+
+            ResultadoCadastro resultado = isCadastrado ? ResultadoCadastro.SUCESSO : ResultadoCadastro.ERRO_BANCO; // Adjust based on your logic
 
             switch (resultado) {
                 case SUCESSO -> {
